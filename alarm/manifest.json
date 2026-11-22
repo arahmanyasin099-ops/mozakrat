@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1B2B">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>المنبه</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F1F5F7;--card:#FFFFFF;--ink:#10222D;--mut:#546A76;--line:#D3DEE3;--acc:#A86C00;--on-acc:#FFFFFF;--bad:#B3261E;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1B2B;--card:#13283C;--ink:#EAF2F7;--mut:#9DB3C2;--line:#274259;--acc:#E8B54A;--on-acc:#1A1203;--bad:#FF8A80;color-scheme:dark}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Almarai",Tahoma,sans-serif;line-height:1.7}
+.wrap{max-width:520px;margin:0 auto;padding:20px}
+h1{font-family:"Reem Kufi","Almarai",Tahoma,sans-serif;font-size:24px;margin:0;display:flex;align-items:center;gap:10px}
+.me{width:52px;height:52px;border-radius:50%;object-fit:cover;border:3px solid var(--acc);flex:none}
+#nm{font:inherit;color:var(--acc);background:transparent;border:0;border-bottom:2px dashed var(--line);width:9em;max-width:100%;padding:0 4px}
+#nm:focus{outline:none;border-bottom-color:var(--acc)}
+.clock{text-align:center;padding:28px 0 20px}
+#time{font-family:"Reem Kufi",sans-serif;font-size:clamp(56px,20vw,92px);font-weight:700;line-height:1.1;direction:ltr;letter-spacing:1px}
+#time small{font-size:.35em;color:var(--mut);margin-inline-start:8px}
+#date{color:var(--mut)}
+.note{font-size:14px;color:var(--mut);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input[type=time],input[type=text].lb{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+input[type=time]{font-size:22px}
+input.lb{flex:1;min-width:120px}
+.days{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.days button{font:inherit;font-size:13px;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:2px 10px}
+.days button[aria-pressed="true"]{background:var(--acc);color:var(--on-acc);border-color:var(--acc)}
+.add,.btn{font:inherit;font-weight:700;cursor:pointer;border:0;border-radius:10px;background:var(--acc);color:var(--on-acc);padding:10px 20px}
+.add{width:100%}
+button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+li{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+li .t{font-family:"Reem Kufi",sans-serif;font-size:30px;line-height:1.2}
+li .i{flex:1;min-width:0}
+li small{color:var(--mut);display:block}
+li.off .t{color:var(--mut)}
+.sw{width:50px;height:28px;border-radius:14px;border:0;background:var(--line);position:relative;cursor:pointer;flex:none}
+.sw::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:inset-inline-start .15s}
+.sw[aria-checked="true"]{background:var(--acc)}
+.sw[aria-checked="true"]::after{inset-inline-start:25px}
+.del{background:none;border:0;color:var(--bad);font:inherit;cursor:pointer;font-size:14px}
+.empty{text-align:center;color:var(--mut);padding:20px}
+#ov{position:fixed;inset:0;z-index:9;background:var(--acc);color:var(--on-acc);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:env(safe-area-inset-top,0px) 20px env(safe-area-inset-bottom,0px)}
+#ov .me{width:96px;height:96px;border-color:var(--on-acc)}
+#ovt{font-family:"Reem Kufi",sans-serif;font-size:clamp(56px,20vw,96px);direction:ltr}
+#ovl{font-size:24px}
+#ov .btn{background:var(--on-acc);color:var(--acc);font-size:20px;min-width:220px}
+@media (prefers-reduced-motion:no-preference){#ovt{animation:p 1s infinite}@keyframes p{50%{transform:scale(1.06)}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><img id="me" class="me" alt="صورة عبد الرحمن" width="52" height="52">منبه <input id="nm" type="text" placeholder="اكتب اسمك" aria-label="اسمك" maxlength="24"></h1>
+  <div class="clock"><div id="time"></div><div id="date"></div></div>
+  <div class="note">يرنّ المنبه ما دامت الصفحة مفتوحة والشاشة مضاءة. اترك الهاتف على الشاحن وشغّل الصوت.</div>
+  <div class="card">
+    <div class="row"><input id="at" type="time" value="06:00" aria-label="وقت المنبه"><input id="al" class="lb" type="text" placeholder="اسم المنبه (اختياري)" maxlength="30"></div>
+    <div class="days" id="days" aria-label="أيام التكرار"></div>
+    <button class="add" id="add">إضافة منبه</button>
+  </div>
+  <ul id="list"></ul>
+</div>
+<div id="ov" hidden role="alertdialog" aria-live="assertive">
+  <img id="me2" class="me" alt="">
+  <div id="ovl"></div><div id="ovt"></div>
+  <button class="btn" id="stop">إيقاف</button>
+  <button class="btn" id="snz">غفوة ٥ دقائق</button>
+</div>
+<script>
+var PHOTO="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA4KCw0LCQ4NDA0QDw4RFiQXFhQUFiwgIRokNC43NjMuMjI6QVNGOj1OPjIySGJJTlZYXV5dOEVmbWVabFNbXVn/2wBDAQ8QEBYTFioXFypZOzI7WVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVn/wAARCABIAEgDASIAAhEBAxEB/8QAGwAAAgIDAQAAAAAAAAAAAAAAAAUCBgEDBAf/xAAuEAACAQMDAwIFAwUAAAAAAAABAgMABBEFEiExUWETQQYiMkJxI4GhFBUzcrH/xAAXAQADAQAAAAAAAAAAAAAAAAADBAUC/8QAHREAAgIDAQEBAAAAAAAAAAAAAAECEQMSIQQxQf/aAAwDAQACEQMRAD8Ac1kCjFSAqwTSLssUbSSEKqjJJqvX/wAR4LLargAjDt1P7Vya9qjXE7RRt+ihwAPuPel9ppFxdr6rtsU9Bjk0lmz1xDmHBfWjf/fL4ZInOWOeeldtv8TzIoE8av56GuCXQZlU7G3dgRiltxDNan9VMD+KBHM/xhpYK+o9Csr2C/iLwt06qeoroxXnWl6obG8SVSSB9S56jtXosbrNEkiHKuAwPinsWTZCWSGr4YxRUqKLYIyBXJq0/wDTabPJnDbdo/JrtFJ/iUE6aqj3cVibqLZuCuSQl0SxW4m9SUZHtVthgQADAA8Un0aIrbqelNJL2ODAlGxT9xNRZO2XIx1ib544yPlFIb6GORirAFexpu88Tx70cHtg0uuE9Q5FZvptLhVNS0tIkaW3428lfFW74XmM2hw5IyhK/wA0okUeoRnIPFMfhKP09OlXnAlIH7VR8z6TPVFIeYoqWKKdsRDFLb9Xllkjl2+gEGxQhLFu+fYUzxWWlEdtOhDEOuMr7Ed/FLelNw4M+VpZOi+xtGW0WNGCuq9ce9Lb6PUY1dbq6haPB2r6HU9qd2kyqKldTRqNzgEdqkN9LSXwrel6ZIwM+4w+4UHKnjml9zq0sM7Qrt+U4yWxV04dWIQjCH2qqwWsL3t0JoldjyNwzitJ31mZJ/EcsUs8jpuiTafdTn/lWnRbVrTTo0fh2JdvBPNJ7W0J1ZGH3cNjjIFWjFUfKuWS/W6lqYoqWKKbEwxUJ/8ABJ/qanU3Qi2lfZuIQkLQ8kkouwmOLclQohbDV0TNCgVpDk54GM81x7SjYzWq5YHG8uADnKHBqNXS7fDRdLcQiV7ea6JkJISVsqPwPalFpeTJcB5yCTkHApldTQSrtivJAQPoZQcnzS21tZbi5GQCzHAC/caLGIGU2mmWPRIjJM9yR8oG1fNOcVC1gFtbpEv2jnya24qljjpFIlZZ7zcjGKKliiiWConEgySR0rdG4W4j3cqTtOex4oopCUnL6PRio/BbrOmSWoMsKloQc5HJT8+KRyagkHE0YII4JHBoopZxW1DcZvSxPd3EEr79gU9xxTewvLfTH2TW7+qePUyOngUUUxjVdF8rcuMdR6payLkOw8Fa3JdW7/TKv78UUU0pMWcEblZXXcpDDuDRRRW7BUf/2Q==";
+var $=function(i){return document.getElementById(i)};
+$("me").src=PHOTO;$("me2").src=PHOTO;
+var S={name:"عبد الرحمن",alarms:[]};
+try{var r=localStorage.getItem("alarm-app");if(r)S=JSON.parse(r)}catch(e){}
+function save(){try{localStorage.setItem("alarm-app",JSON.stringify(S))}catch(e){}}
+var DAYS=["أحد","اثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"],sel=[];
+function fmt(t){var p=t.split(":"),h=+p[0];return (h%12||12)+":"+p[1]+" "+(h<12?"ص":"م")}
+function pad(n){return (n<10?"0":"")+n}
+
+function drawDays(){var d=$("days");d.innerHTML="";DAYS.forEach(function(n,i){var b=document.createElement("button");b.textContent=n;b.setAttribute("aria-pressed",sel.indexOf(i)>-1);b.onclick=function(){var k=sel.indexOf(i);if(k>-1)sel.splice(k,1);else sel.push(i);drawDays()};d.appendChild(b)})}
+function render(){
+  var ul=$("list");ul.innerHTML="";
+  if(!S.alarms.length){ul.innerHTML='<li class="empty" style="display:block">لا توجد منبهات. اختر وقتاً واضغط «إضافة منبه».</li>';return}
+  S.alarms.slice().sort(function(a,b){return a.time<b.time?-1:1}).forEach(function(a){
+    var li=document.createElement("li");if(!a.on)li.className="off";
+    var i=document.createElement("div");i.className="i";
+    var t=document.createElement("div");t.className="t";t.textContent=fmt(a.time);
+    var s=document.createElement("small");s.textContent=(a.label?a.label+" – ":"")+(a.days.length?a.days.map(function(d){return DAYS[d]}).join("، "):"مرة واحدة");
+    i.appendChild(t);i.appendChild(s);
+    var sw=document.createElement("button");sw.className="sw";sw.setAttribute("role","switch");sw.setAttribute("aria-checked",a.on);sw.setAttribute("aria-label","تشغيل المنبه");
+    sw.onclick=function(){a.on=!a.on;save();render();keepAwake()};
+    var d=document.createElement("button");d.className="del";d.textContent="حذف";
+    d.onclick=function(){S.alarms=S.alarms.filter(function(x){return x.id!==a.id});save();render()};
+    li.appendChild(i);li.appendChild(sw);li.appendChild(d);ul.appendChild(li);
+  });
+}
+$("add").onclick=function(){
+  var t=$("at").value;if(!t)return;
+  S.alarms.push({id:Date.now(),time:t,label:$("al").value.trim(),on:true,days:sel.slice().sort()});
+  $("al").value="";sel=[];drawDays();save();render();keepAwake();
+};
+$("nm").value=S.name||"";
+$("nm").oninput=function(e){S.name=e.target.value;save()};
+
+var ctx=null,beepT=null,ringing=null,snooze=null,fired={},wl=null;
+function unlock(){try{if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();if(ctx.state==="suspended")ctx.resume()}catch(e){}}
+document.addEventListener("pointerdown",unlock);
+function beep(){if(!ctx)return;try{var o=ctx.createOscillator(),g=ctx.createGain();o.type="square";o.frequency.value=880;g.gain.value=.25;o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.25)}catch(e){}}
+function startRing(a){
+  ringing=a;$("ov").hidden=false;$("ovt").textContent=fmt(a.time);$("ovl").textContent=(a.label||"حان الوقت")+(S.name?" يا "+S.name:"");
+  beep();beepT=setInterval(function(){beep();setTimeout(beep,350);try{navigator.vibrate&&navigator.vibrate([300,150,300])}catch(e){}},1500);
+}
+function stopRing(){clearInterval(beepT);$("ov").hidden=true;ringing=null}
+$("stop").onclick=stopRing;
+$("snz").onclick=function(){var a=ringing;stopRing();if(a)snooze={a:a,at:Date.now()+300000}};
+function keepAwake(){
+  if(!S.alarms.some(function(a){return a.on}))return;
+  try{navigator.wakeLock&&navigator.wakeLock.request("screen").then(function(l){wl=l}).catch(function(){})}catch(e){}
+}
+document.addEventListener("visibilitychange",function(){if(!document.hidden)keepAwake()});
+
+function tick(){
+  var n=new Date(),h=n.getHours(),hm=pad(h)+":"+pad(n.getMinutes());
+  $("time").innerHTML=(h%12||12)+":"+pad(n.getMinutes())+"<small>"+pad(n.getSeconds())+" "+(h<12?"ص":"م")+"</small>";
+  $("date").textContent=n.toLocaleDateString("ar",{weekday:"long",day:"numeric",month:"long"});
+  if(ringing)return;
+  var key=n.toDateString()+hm;
+  S.alarms.forEach(function(a){
+    if(ringing||!a.on||a.time!==hm||fired[a.id]===key)return;
+    if(a.days.length&&a.days.indexOf(n.getDay())<0)return;
+    fired[a.id]=key;
+    if(!a.days.length){a.on=false;save();render()}
+    startRing(a);
+  });
+  if(!ringing&&snooze&&Date.now()>=snooze.at){var s=snooze.a;snooze=null;startRing(s)}
+}
+drawDays();render();tick();setInterval(tick,1000);keepAwake();
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});}
+</script>
+</body>
+</html>
