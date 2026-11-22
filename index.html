@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E4A5A">
+<link rel="manifest" href="manifest.json">
+<title>مكتبة مذكرات الشهادة السودانية</title>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF3F2; --surface:#FFFFFF; --ink:#12262D; --muted:#4F6670; --line:#CFDBD9;
+  --nile:#0E4A5A; --on-nile:#FFFFFF; --sun:#E3A72F; --green:#1D7A4E;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1A1F; --surface:#15272E; --ink:#E7F0EE; --muted:#9DB4BA; --line:#27414A;
+    --nile:#0A3643; --on-nile:#F3F8F7; --sun:#E8B54A; --green:#4FBF86;
+    color-scheme:dark;
+  }
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Almarai",Tahoma,"Segoe UI",sans-serif;line-height:1.8;font-size:16px}
+h1,h2{font-family:"Reem Kufi","Almarai",Tahoma,sans-serif;margin:0}
+.hero{background:var(--nile);color:var(--on-nile);padding:40px 20px 56px;border-bottom:6px solid var(--sun)}
+.wrap{max-width:860px;margin:0 auto}
+.hero h1{font-size:clamp(30px,7vw,52px);line-height:1.25;font-weight:700}
+.hero p{margin:12px 0 24px;max-width:34em;opacity:.9}
+.search{display:flex;gap:8px;background:var(--surface);border-radius:12px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:10px 12px;font-size:17px}
+.search input:focus{outline:none}
+.search:focus-within{outline:3px solid var(--sun)}
+main{padding:24px 20px 48px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button,.chips button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 16px}
+.tabs button[aria-pressed="true"],.chips button[aria-pressed="true"]{background:var(--nile);color:var(--on-nile);border-color:var(--nile)}
+button:focus-visible,a:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px}
+.chips button{white-space:nowrap;padding:4px 14px;font-size:14px}
+.count{color:var(--muted);font-size:14px;margin:8px 0}
+ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+li{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);border:1px solid var(--line);border-inline-start:6px solid var(--green);border-radius:8px;padding:12px 16px}
+li h2{font-size:18px;line-height:1.5}
+li small{color:var(--muted)}
+.dl{flex:none;background:var(--green);color:#fff;text-decoration:none;border-radius:8px;padding:6px 16px;font-size:15px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .dl{color:#06231A}}
+.soon{flex:none;color:var(--muted);font-size:14px}
+.empty{padding:32px 16px;text-align:center;color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:14px;padding:0 20px 32px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <h1>مكتبة مذكرات الشهادة السودانية</h1>
+    <p>ملخصات ونماذج امتحانات وشروحات لكل المواد، للقسمين العلمي والأدبي. ابحث عن مادتك وحمّل المذكرة.</p>
+    <div class="search" role="search">
+      <input id="q" type="search" placeholder="ابحث باسم المذكرة أو المادة" aria-label="بحث">
+    </div>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <div class="tabs" id="tabs"></div>
+    <div class="chips" id="chips"></div>
+    <div class="count" id="count" aria-live="polite"></div>
+    <ul id="list"></ul>
+  </div>
+</main>
+<footer>المذكرات الظاهرة أمثلة. استبدلها بمذكراتك الحقيقية في قائمة NOTES داخل الصفحة.</footer>
+<script>
+var SUBJECTS = [
+  {n:"اللغة العربية", t:"all"}, {n:"اللغة الإنجليزية", t:"all"},
+  {n:"الدراسات الإسلامية", t:"all"}, {n:"الرياضيات", t:"all"},
+  {n:"الفيزياء", t:"علمي"}, {n:"الكيمياء", t:"علمي"}, {n:"الأحياء", t:"علمي"},
+  {n:"التاريخ", t:"أدبي"}, {n:"الجغرافيا", t:"أدبي"}, {n:"الاقتصاد", t:"أدبي"}
+];
+var NOTES = [
+  {title:"ملخص النحو والصرف", s:"اللغة العربية", kind:"ملخص", url:""},
+  {title:"نماذج امتحانات العربي ٥ سنوات", s:"اللغة العربية", kind:"نماذج امتحانات", url:""},
+  {title:"Grammar and Writing Guide", s:"اللغة الإنجليزية", kind:"شرح", url:""},
+  {title:"مراجعة الفقه والتوحيد", s:"الدراسات الإسلامية", kind:"ملخص", url:""},
+  {title:"قوانين الرياضيات المهمة", s:"الرياضيات", kind:"ملخص", url:""},
+  {title:"حل نماذج الرياضيات", s:"الرياضيات", kind:"نماذج امتحانات", url:""},
+  {title:"الميكانيكا والكهرباء", s:"الفيزياء", kind:"شرح", url:""},
+  {title:"الكيمياء العضوية مبسّطة", s:"الكيمياء", kind:"شرح", url:""},
+  {title:"الوراثة والخلية", s:"الأحياء", kind:"ملخص", url:""},
+  {title:"تاريخ السودان الحديث", s:"التاريخ", kind:"ملخص", url:""},
+  {title:"جغرافيا السودان والوطن العربي", s:"الجغرافيا", kind:"ملخص", url:""},
+  {title:"مبادئ الاقتصاد", s:"الاقتصاد", kind:"شرح", url:""}
+];
+var track = "الكل", subj = "الكل", query = "";
+var $ = function(id){return document.getElementById(id)};
+
+function btn(label, pressed, fn){
+  var b = document.createElement("button");
+  b.textContent = label; b.setAttribute("aria-pressed", pressed);
+  b.onclick = fn; return b;
+}
+function drawFilters(){
+  var tabs = $("tabs"); tabs.innerHTML = "";
+  ["الكل","علمي","أدبي"].forEach(function(t){
+    tabs.appendChild(btn(t === "الكل" ? "كل الأقسام" : "القسم " + t, track === t, function(){track = t; subj = "الكل"; drawFilters(); drawList();}));
+  });
+  var chips = $("chips"); chips.innerHTML = "";
+  chips.appendChild(btn("كل المواد", subj === "الكل", function(){subj = "الكل"; drawFilters(); drawList();}));
+  SUBJECTS.forEach(function(s){
+    if(track !== "الكل" && s.t !== "all" && s.t !== track) return;
+    chips.appendChild(btn(s.n, subj === s.n, function(){subj = s.n; drawFilters(); drawList();}));
+  });
+}
+function drawList(){
+  var allowed = SUBJECTS.filter(function(s){return track === "الكل" || s.t === "all" || s.t === track}).map(function(s){return s.n});
+  var q = query.trim().toLowerCase();
+  var rows = NOTES.filter(function(n){
+    return allowed.indexOf(n.s) > -1 && (subj === "الكل" || n.s === subj) &&
+      (!q || (n.title + " " + n.s).toLowerCase().indexOf(q) > -1);
+  });
+  $("count").textContent = rows.length + " مذكرة";
+  var ul = $("list"); ul.innerHTML = "";
+  if(!rows.length){
+    ul.innerHTML = '<li class="empty" style="display:block">لا توجد مذكرات مطابقة. جرّب مادة أخرى أو امسح البحث.</li>';
+    return;
+  }
+  rows.forEach(function(n){
+    var li = document.createElement("li");
+    var d = document.createElement("div");
+    var h = document.createElement("h2"); h.textContent = n.title;
+    var sm = document.createElement("small"); sm.textContent = n.s + " – " + n.kind;
+    d.appendChild(h); d.appendChild(sm); li.appendChild(d);
+    if(n.url){
+      var a = document.createElement("a"); a.className = "dl"; a.href = n.url;
+      a.target = "_blank"; a.rel = "noopener"; a.textContent = "تحميل"; li.appendChild(a);
+    } else {
+      var sp = document.createElement("span"); sp.className = "soon"; sp.textContent = "قريبًا"; li.appendChild(sp);
+    }
+    ul.appendChild(li);
+  });
+}
+$("q").addEventListener("input", function(e){query = e.target.value; drawList();});
+drawFilters(); drawList();
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});}
+</script>
+</body>
+  </html>
